@@ -684,28 +684,44 @@ namespace Konseki
 
         private static TargetWalker CreateTarget(Transform parent, Palette palette, Vector3[] route)
         {
-            GameObject targetObject = new GameObject("Target - Long Coat");
+            GameObject targetObject = new GameObject("Target - Adult Woman");
             targetObject.transform.SetParent(parent);
             targetObject.transform.position = route[0];
+            if (route.Length > 1)
+            {
+                Vector3 initialDirection = route[1] - route[0];
+                initialDirection.y = 0f;
+                if (initialDirection.sqrMagnitude > 0.001f)
+                {
+                    targetObject.transform.rotation = Quaternion.LookRotation(initialDirection.normalized, Vector3.up);
+                }
+            }
 
             CapsuleCollider collider = targetObject.AddComponent<CapsuleCollider>();
-            collider.height = 1.78f;
+            collider.height = 1.82f;
             collider.radius = 0.3f;
-            collider.center = new Vector3(0f, 0.89f, 0f);
+            collider.center = new Vector3(0f, 0.91f, 0f);
 
-            CreateLocalCube("Long coat", targetObject.transform, new Vector3(0f, 1.08f, 0f), new Vector3(0.6f, 0.86f, 0.36f), palette.Coat, false);
-            CreateLocalCube("Coat tail", targetObject.transform, new Vector3(0f, 0.67f, 0.02f), new Vector3(0.65f, 0.48f, 0.38f), palette.Coat, false);
-            CreateLocalCube("Raised collar", targetObject.transform, new Vector3(0f, 1.5f, 0.05f), new Vector3(0.46f, 0.18f, 0.32f), palette.Coat, false);
-            CreateLocalSphere("Head", targetObject.transform, new Vector3(0f, 1.7f, 0f), new Vector3(0.38f, 0.43f, 0.38f), palette.Skin, false);
-            CreateLocalCube("Hair silhouette", targetObject.transform, new Vector3(0f, 1.89f, -0.015f), new Vector3(0.42f, 0.15f, 0.42f), palette.Trousers, false);
-
-            Transform leftArm = CreateLocalCube("Left arm", targetObject.transform, new Vector3(-0.4f, 1.05f, 0f), new Vector3(0.18f, 0.74f, 0.2f), palette.Coat, false).transform;
-            Transform rightArm = CreateLocalCube("Right arm", targetObject.transform, new Vector3(0.4f, 1.05f, 0f), new Vector3(0.18f, 0.74f, 0.2f), palette.Coat, false).transform;
-            Transform leftLeg = CreateLocalCube("Left leg", targetObject.transform, new Vector3(-0.15f, 0.34f, 0f), new Vector3(0.21f, 0.72f, 0.24f), palette.Trousers, false).transform;
-            Transform rightLeg = CreateLocalCube("Right leg", targetObject.transform, new Vector3(0.15f, 0.34f, 0f), new Vector3(0.21f, 0.72f, 0.24f), palette.Trousers, false).transform;
+            GameObject characterPrefab = Resources.Load<GameObject>("Characters/TargetWoman3D");
+            if (characterPrefab != null)
+            {
+                GameObject character = Object.Instantiate(characterPrefab, targetObject.transform, false);
+                character.name = "Konseki VRM Adult Woman";
+                CartoonTargetAnimator characterAnimation = character.GetComponent<CartoonTargetAnimator>();
+                if (characterAnimation != null)
+                {
+                    characterAnimation.SetMovementRoot(targetObject.transform);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[Konseki] TargetWoman3D Prefab을 찾지 못해 단순 3D 실루엣을 사용합니다.");
+                CreateLocalCube("Fallback body", targetObject.transform, new Vector3(0f, 1.05f, 0f), new Vector3(0.64f, 1.3f, 0.34f), palette.Coat, false);
+                CreateLocalSphere("Fallback head", targetObject.transform, new Vector3(0f, 1.82f, 0f), new Vector3(0.4f, 0.44f, 0.4f), palette.Skin, false);
+            }
 
             TargetWalker walker = targetObject.AddComponent<TargetWalker>();
-            walker.Configure(route, leftArm, rightArm, leftLeg, rightLeg);
+            walker.Configure(route, null, null, null, null);
             return walker;
         }
 

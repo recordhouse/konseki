@@ -1,6 +1,6 @@
 # Konseki
 
-고요한 일본 주택가의 밤을 배경으로 한 1인칭 미행 게임 프로토타입입니다. 외부 에셋 없이 유니티 기본 도형과 런타임 생성 코드만으로 플레이 가능한 기본 틀을 구성했습니다.
+고요한 일본 주택가의 밤을 배경으로 한 1인칭 미행 게임 프로토타입입니다. VRM 1.0 기반의 Cartoon Rendering 3D 캐릭터를 포함하며, 골목 환경은 유니티 기본 도형과 런타임 생성 코드로 구성했습니다.
 
 ## 실행
 
@@ -20,7 +20,7 @@
 
 ## 게임 규칙
 
-- 코트를 입은 타깃을 놓치지 말고 여러 교차로와 순환 샛길을 따라 골목 끝까지 미행합니다.
+- 게임 안에서는 `Konseki.vrm`의 여성 카툰 3D 타깃이 여러 교차로와 순환 샛길을 따라 이동합니다.
 - 너무 가까이 접근하거나 타깃의 시야에 오래 머물면 의심 수치가 올라갑니다.
 - 너무 멀리 떨어진 상태가 지속되면 타깃을 놓칩니다.
 - 타깃이 목적지에 도착할 때 적절한 거리를 유지하고 있으면 성공합니다.
@@ -35,7 +35,9 @@
 - `NightAlleyPrefabBaker` — 골목과 재질을 편집기에서 Prefab으로 변환
 - `PixelArtRenderer` — 저해상도 픽셀화, 제한 팔레트와 디더링
 - `FirstPersonController` — 느린 1인칭 이동과 빠른 마우스 시점 전환
-- `TargetWalker` — 타깃의 경로 이동과 보행 모션
+- `TargetWalker` — 타깃의 경로 이동
+- `CartoonTargetAnimator` — VRM Humanoid 뼈대 기반 3D 보행과 몸통 바운스
+- `VrmTargetCharacterBuilder` — `Konseki.vrm` 임포트, MToon 재질과 게임용 프리팹 연결
 - `TailGameManager` — 거리, 의심도, 성공/실패 판정
 - `TailHud` — 상태 HUD와 안내 문구
 
@@ -48,6 +50,14 @@
 - Prefab이 아직 없거나 손상된 경우에만 기존 절차 생성 방식을 안전한 폴백으로 사용합니다.
 - 수동 재생성이 필요하면 Unity 메뉴에서 `Konseki > Level > Bake Quiet Residential Prefab`을 실행합니다.
 - 타깃 경로는 `Assets/Konseki/Scripts/World/AlleyRouteCatalog.cs`에서 수정합니다.
+- 3D 타깃을 다시 생성해야 하면 Unity 메뉴에서 `Konseki > Characters > Build Target From Konseki VRM`을 실행합니다.
+
+## VRM 캐릭터 적용 방식
+
+- 원본은 `Assets/Konseki/ArtReferences/TargetWoman/Konseki.vrm`이며 VRM 1.0 Humanoid, MToon 재질과 Spring Bone 정보를 유지합니다.
+- 무료 UniVRM 패키지가 VRM을 임포트하고, `VrmTargetCharacterBuilder`가 보행용 뼈대와 타깃 이동 루트를 연결합니다.
+- Unity AI 생성이나 유료 모델 변환을 사용하지 않습니다.
+- 모델을 배포할 때는 VRM 파일 안의 이용 허가와 출처 표기 조건을 확인합니다.
 
 ## 성능 기준
 

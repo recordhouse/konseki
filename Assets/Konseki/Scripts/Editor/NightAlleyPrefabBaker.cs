@@ -10,7 +10,7 @@ namespace Konseki.EditorTools
     [InitializeOnLoad]
     public static class NightAlleyPrefabBaker
     {
-        public const int BakeVersion = 2;
+        public const int BakeVersion = 8;
 
         private const string LevelsFolder = "Assets/Konseki/Resources/Levels";
         private const string GeneratedAssetsFolder = "Assets/Konseki/Generated/BakedAssets";
@@ -28,9 +28,12 @@ namespace Konseki.EditorTools
             "Assets/Konseki/Scripts/World/PixelArtRenderer.cs",
             "Assets/Konseki/Scripts/World/FlickeringLight.cs",
             "Assets/Konseki/Scripts/NPC/TargetWalker.cs",
+            "Assets/Konseki/Scripts/NPC/CartoonTargetAnimator.cs",
             "Assets/Konseki/Scripts/Player/FirstPersonController.cs",
             "Assets/Konseki/Resources/Shaders/PixelArt.shader",
-            "Assets/Konseki/Resources/PixelArt/quiet-residential-wall.png"
+            "Assets/Konseki/Resources/PixelArt/quiet-residential-wall.png",
+            "Assets/Konseki/ArtReferences/TargetWoman/Konseki.vrm",
+            "Assets/Konseki/Resources/Characters/TargetWoman3D.prefab"
         };
 
         private static bool isBaking;
@@ -328,8 +331,17 @@ namespace Konseki.EditorTools
                 BakedAlleyLevel marker = prefab == null ? null : prefab.GetComponent<BakedAlleyLevel>();
                 FirstPersonController player = prefab == null ? null : prefab.GetComponentInChildren<FirstPersonController>(true);
                 TargetWalker target = prefab == null ? null : prefab.GetComponentInChildren<TargetWalker>(true);
+                CartoonTargetAnimator targetAnimation = prefab == null ? null : prefab.GetComponentInChildren<CartoonTargetAnimator>(true);
+                Renderer[] targetRenderers = targetAnimation == null
+                    ? new Renderer[0]
+                    : targetAnimation.GetComponentsInChildren<Renderer>(true);
+                GameObject targetCharacterPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(
+                    "Assets/Konseki/Resources/Characters/TargetWoman3D.prefab");
 
-                if (prefab == null || marker == null || player == null || target == null || !marker.Matches(BakeVersion, signature))
+                if (prefab == null || marker == null || player == null || target == null || targetAnimation == null ||
+                    targetRenderers.Length < 1 || targetRenderers.Length > 32 ||
+                    targetCharacterPrefab == null || !targetAnimation.IsConfigured ||
+                    !marker.Matches(BakeVersion, signature))
                 {
                     throw new System.InvalidOperationException($"{variant} Prefab의 핵심 참조 검증에 실패했습니다.");
                 }
