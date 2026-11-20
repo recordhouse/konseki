@@ -73,13 +73,13 @@ namespace Konseki
             RenderSettings.skybox = null;
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogDensity = variant == AlleyVariant.NeonYokocho ? 0.017f : 0.012f;
+            RenderSettings.fogDensity = 0.012f;
             RenderSettings.fogColor = palette.Fog;
             RenderSettings.ambientMode = AmbientMode.Trilight;
             RenderSettings.ambientSkyColor = palette.AmbientSky;
             RenderSettings.ambientEquatorColor = palette.AmbientEquator;
             RenderSettings.ambientGroundColor = palette.AmbientGround;
-            RenderSettings.ambientIntensity = variant == AlleyVariant.QuietResidential ? 0.68f : 0.82f;
+            RenderSettings.ambientIntensity = 0.68f;
             Physics.gravity = new Vector3(0f, -20f, 0f);
             QualitySettings.shadowDistance = 32f;
         }
@@ -103,65 +103,22 @@ namespace Konseki
             Color warmLight;
             Color coolLight;
 
-            switch (variant)
-            {
-                case AlleyVariant.NeonYokocho:
-                    texturePath = "PixelArt/neon-yokocho-wall";
-                    asphalt = Hex("#11172B");
-                    concrete = Hex("#172038");
-                    dark = Hex("#0D1024");
-                    mid = Hex("#16244A");
-                    warm = Hex("#2D1642");
-                    red = Hex("#E83F9B");
-                    blue = Hex("#19D3F0");
-                    cream = Hex("#F7E36A");
-                    fog = Hex("#09061C");
-                    sky = Hex("#151943");
-                    equator = Hex("#17112D");
-                    ground = Hex("#050712");
-                    key = Hex("#AFCBFF");
-                    warmLight = Hex("#FF4EA8");
-                    coolLight = Hex("#26D7FF");
-                    break;
-
-                case AlleyVariant.QuietResidential:
-                    texturePath = "PixelArt/quiet-residential-wall";
-                    asphalt = Hex("#27343E");
-                    concrete = Hex("#4A575A");
-                    dark = Hex("#263239");
-                    mid = Hex("#53645F");
-                    warm = Hex("#766958");
-                    red = Hex("#A95E4B");
-                    blue = Hex("#55758A");
-                    cream = Hex("#E7C98C");
-                    fog = Hex("#111C29");
-                    sky = Hex("#304A65");
-                    equator = Hex("#243641");
-                    ground = Hex("#111820");
-                    key = Hex("#BCD4ED");
-                    warmLight = Hex("#FFD18A");
-                    coolLight = Hex("#83B7D4");
-                    break;
-
-                default:
-                    texturePath = "PixelArt/showa-izakaya-wall";
-                    asphalt = Hex("#262737");
-                    concrete = Hex("#4A4040");
-                    dark = Hex("#241A20");
-                    mid = Hex("#513127");
-                    warm = Hex("#7A432C");
-                    red = Hex("#C83C34");
-                    blue = Hex("#334C72");
-                    cream = Hex("#EAB35E");
-                    fog = Hex("#0D1020");
-                    sky = Hex("#263251");
-                    equator = Hex("#2D2636");
-                    ground = Hex("#120E14");
-                    key = Hex("#D4D9F2");
-                    warmLight = Hex("#FFB45C");
-                    coolLight = Hex("#7892C5");
-                    break;
-            }
+            texturePath = "PixelArt/quiet-residential-wall";
+            asphalt = Hex("#27343E");
+            concrete = Hex("#4A575A");
+            dark = Hex("#263239");
+            mid = Hex("#53645F");
+            warm = Hex("#766958");
+            red = Hex("#A95E4B");
+            blue = Hex("#55758A");
+            cream = Hex("#E7C98C");
+            fog = Hex("#111C29");
+            sky = Hex("#304A65");
+            equator = Hex("#243641");
+            ground = Hex("#111820");
+            key = Hex("#BCD4ED");
+            warmLight = Hex("#FFD18A");
+            coolLight = Hex("#83B7D4");
 
             Texture2D facadeTexture = Resources.Load<Texture2D>(texturePath);
             if (facadeTexture != null)
@@ -184,8 +141,8 @@ namespace Konseki
                 FacadeArt = CreateTexturedMaterial("Generated pixel facade", Hex("#FFFFFF"), facadeTexture, 0.12f, 0f, Vector2.one),
                 WindowWarm = CreateEmissiveMaterial("Warm pixel windows", Darken(cream, 0.28f), warmLight * 0.65f),
                 WindowCool = CreateEmissiveMaterial("Cool pixel windows", Darken(blue, 0.2f), coolLight * 0.65f),
-                AccentRed = CreateEmissiveMaterial("Red pixel accent", red, red * (variant == AlleyVariant.NeonYokocho ? 1.25f : 0.85f)),
-                AccentBlue = CreateEmissiveMaterial("Blue pixel accent", blue, coolLight * (variant == AlleyVariant.NeonYokocho ? 1.1f : 0.8f)),
+                AccentRed = CreateEmissiveMaterial("Red pixel accent", red, red * 0.85f),
+                AccentBlue = CreateEmissiveMaterial("Blue pixel accent", blue, coolLight * 0.8f),
                 AccentCream = CreateEmissiveMaterial("Cream pixel accent", cream, warmLight * 0.75f),
                 Metal = CreateMaterial("Ink metal", Darken(dark, 0.24f), 0.48f, 0.38f),
                 Puddle = CreateMaterial("Pixel puddle", Darken(blue, 0.38f), 0.92f, 0.52f),
@@ -447,7 +404,7 @@ namespace Konseki
 
         private static void CreateBuilding(int side, int index, float z, Transform parent, Palette palette, AlleyVariant variant)
         {
-            float baseHeight = variant == AlleyVariant.NeonYokocho ? 6.7f : variant == AlleyVariant.QuietResidential ? 5.1f : 5.4f;
+            const float baseHeight = 5.1f;
             float height = baseHeight + (index % 4) * 0.62f + (side > 0 ? 0.24f : 0f);
             float depth = 4.8f + (index % 3) * 0.65f;
             float facadeX = side * 4.72f;
@@ -466,18 +423,7 @@ namespace Konseki
             CreateWindow(side, facadeX, 4.45f, z + 2.12f, (index + side) % 3 == 0 ? palette.WindowWarm : palette.WindowCool, palette.Metal, parent);
             CreateCube("Recessed doorway", new Vector3(facadeX - side * 0.14f, 1.05f, z), new Vector3(0.16f, 2.05f, 1.18f), palette.Metal, parent, false);
 
-            switch (variant)
-            {
-                case AlleyVariant.NeonYokocho:
-                    DecorateNeonBuilding(side, index, z, facadeX, height, parent, palette);
-                    break;
-                case AlleyVariant.QuietResidential:
-                    DecorateResidentialBuilding(side, index, z, facadeX, height, parent, palette);
-                    break;
-                default:
-                    DecorateShowaBuilding(side, index, z, facadeX, parent, palette);
-                    break;
-            }
+            DecorateResidentialBuilding(side, index, z, facadeX, height, parent, palette);
         }
 
         private static void CreateWindow(int side, float facadeX, float y, float z, Material glass, Material frame, Transform parent)
@@ -488,39 +434,6 @@ namespace Konseki
             CreateCube("Window frame bottom", new Vector3(x - side * 0.045f, y - 0.42f, z), new Vector3(0.16f, 0.09f, 1.42f), frame, parent, false);
             CreateCube("Window frame side", new Vector3(x - side * 0.045f, y, z - 0.67f), new Vector3(0.16f, 0.9f, 0.09f), frame, parent, false);
             CreateCube("Window frame side", new Vector3(x - side * 0.045f, y, z + 0.67f), new Vector3(0.16f, 0.9f, 0.09f), frame, parent, false);
-        }
-
-        private static void DecorateShowaBuilding(int side, int index, float z, float facadeX, Transform parent, Palette palette)
-        {
-            if (index % 2 == 0)
-            {
-                Vector3 sign = new Vector3(facadeX - side * 0.3f, 2.75f, z + 2.75f);
-                Material signMaterial = index % 4 == 0 ? palette.AccentRed : palette.AccentBlue;
-                CreateCube("Showa vertical sign", sign, new Vector3(0.42f, 2.2f, 0.9f), signMaterial, parent, false);
-                CreateSignText(index % 4 == 0 ? "酒" : "麺", sign - Vector3.right * side * 0.24f, side, palette.UiAccent, parent, 0.078f);
-                CreateLanternRow(new Vector3(facadeX - side * 0.42f, 2.22f, z - 1.7f), side, 4, parent, palette);
-            }
-            else
-            {
-                CreateNoren(side, facadeX, z, parent, palette);
-                CreateCrates(new Vector3(facadeX - side * 0.62f, 0.35f, z + 2.35f), side, parent, palette);
-            }
-        }
-
-        private static void DecorateNeonBuilding(int side, int index, float z, float facadeX, float height, Transform parent, Palette palette)
-        {
-            Material primary = index % 2 == 0 ? palette.AccentBlue : palette.AccentRed;
-            CreateCube("Neon facade strip", new Vector3(facadeX - side * 0.26f, height - 0.62f, z), new Vector3(0.24f, 0.14f, 7.25f), primary, parent, false);
-
-            Vector3 sign = new Vector3(facadeX - side * 0.38f, 2.95f, z + (index % 2 == 0 ? 2.55f : -2.55f));
-            CreateCube("Neon blade sign", sign, new Vector3(0.6f, 2.7f, 1.1f), primary, parent, false);
-            string signText = index % 3 == 0 ? "夜" : index % 3 == 1 ? "街" : "雨";
-            CreateSignText(signText, sign - Vector3.right * side * 0.34f, side, Hex("#F3F7FF"), parent, 0.082f);
-
-            if (index % 3 == 0)
-            {
-                CreateVendingMachine(new Vector3(facadeX - side * 0.58f, 1.05f, z - 1.25f), side > 0 ? -90f : 90f, parent, palette);
-            }
         }
 
         private static void DecorateResidentialBuilding(int side, int index, float z, float facadeX, float height, Transform parent, Palette palette)
@@ -549,40 +462,19 @@ namespace Konseki
 
         private static void CreateVariantSetDressing(Transform parent, Palette palette, AlleyVariant variant)
         {
-            switch (variant)
-            {
-                case AlleyVariant.NeonYokocho:
-                    CreateNeonGate(new Vector3(0f, 4.1f, 15f), parent, palette);
-                    CreateNeonGate(new Vector3(0f, 4.3f, 42f), parent, palette);
-                    CreateVendingMachine(new Vector3(-4.35f, 1.05f, 13f), 90f, parent, palette);
-                    CreateVendingMachine(new Vector3(4.35f, 1.05f, 48f), -90f, parent, palette);
-                    CreateRain(parent, palette);
-                    break;
-
-                case AlleyVariant.QuietResidential:
-                    CreateBicycle(new Vector3(-4.18f, 0.42f, 18f), 8f, parent, palette);
-                    CreateBicycle(new Vector3(4.15f, 0.42f, 49f), 176f, parent, palette);
-                    CreatePlant(new Vector3(-4.3f, 0.32f, 38f), parent, palette);
-                    CreatePlant(new Vector3(4.3f, 0.32f, 70f), parent, palette);
-                    break;
-
-                default:
-                    CreateLanternRow(new Vector3(-4.34f, 2.35f, 17f), -1, 5, parent, palette);
-                    CreateLanternRow(new Vector3(4.34f, 2.35f, 46f), 1, 5, parent, palette);
-                    CreateLanternRow(new Vector3(-4.34f, 2.35f, 72f), -1, 5, parent, palette);
-                    CreateCrates(new Vector3(-4.18f, 0.35f, 25f), -1, parent, palette);
-                    CreateCrates(new Vector3(4.18f, 0.35f, 58f), 1, parent, palette);
-                    break;
-            }
+            CreateBicycle(new Vector3(-4.18f, 0.42f, 18f), 8f, parent, palette);
+            CreateBicycle(new Vector3(4.15f, 0.42f, 49f), 176f, parent, palette);
+            CreatePlant(new Vector3(-4.3f, 0.32f, 38f), parent, palette);
+            CreatePlant(new Vector3(4.3f, 0.32f, 70f), parent, palette);
         }
 
         private static void CreateStreetLights(Transform parent, Palette palette, AlleyVariant variant)
         {
-            int count = variant == AlleyVariant.NeonYokocho ? 5 : 7;
+            const int count = 7;
             for (int i = 0; i < count; i++)
             {
                 int side = i % 2 == 0 ? -1 : 1;
-                float z = 8f + i * (variant == AlleyVariant.NeonYokocho ? 16f : 12.2f);
+                float z = 8f + i * 12.2f;
                 float x = side * 3.95f;
 
                 if (IsNearMainJunction(side, z, 4.6f))
@@ -598,9 +490,9 @@ namespace Konseki
                 lightObject.transform.position = new Vector3(x - side * 0.42f, 4.05f, z);
                 Light light = lightObject.AddComponent<Light>();
                 light.type = LightType.Point;
-                light.color = variant == AlleyVariant.NeonYokocho && i % 2 == 0 ? palette.CoolLight : palette.WarmLight;
+                light.color = palette.WarmLight;
                 light.range = 10.5f;
-                light.intensity = variant == AlleyVariant.QuietResidential ? 1.55f : 2.05f;
+                light.intensity = 1.55f;
                 light.shadows = LightShadows.None;
                 lightObject.AddComponent<FlickeringLight>();
             }
@@ -655,98 +547,6 @@ namespace Konseki
         {
             CreateCube("Pixel puddle", new Vector3(-1.45f, 0.015f, 16f), new Vector3(1.25f, 0.018f, 3.2f), palette.Puddle, parent, false);
             CreateCube("Pixel puddle", new Vector3(1.85f, 0.015f, 41f), new Vector3(1.05f, 0.018f, 2.4f), palette.Puddle, parent, false);
-            if (variant != AlleyVariant.QuietResidential)
-            {
-                CreateCube("Pixel puddle", new Vector3(-2.05f, 0.015f, 65f), new Vector3(1.55f, 0.018f, 3f), palette.Puddle, parent, false);
-            }
-        }
-
-        private static void CreateVendingMachine(Vector3 position, float yRotation, Transform parent, Palette palette)
-        {
-            Transform machine = new GameObject("Pixel vending machine").transform;
-            machine.SetParent(parent);
-            machine.position = position;
-            machine.rotation = Quaternion.Euler(0f, yRotation, 0f);
-
-            CreateLocalCube("Body", machine, Vector3.zero, new Vector3(0.8f, 2.05f, 0.65f), palette.AccentBlue, false);
-            CreateLocalCube("Lit display", machine, new Vector3(0f, 0.32f, -0.34f), new Vector3(0.64f, 0.82f, 0.04f), palette.WindowCool, false);
-            for (int row = 0; row < 3; row++)
-            {
-                for (int item = -2; item <= 2; item++)
-                {
-                    Material can = (row + item) % 2 == 0 ? palette.AccentCream : palette.AccentRed;
-                    CreateLocalCube("Drink pixel", machine, new Vector3(item * 0.105f, 0.57f - row * 0.21f, -0.38f), new Vector3(0.07f, 0.11f, 0.025f), can, false);
-                }
-            }
-
-            CreateLocalCube("Payment slot", machine, new Vector3(0.22f, -0.35f, -0.37f), new Vector3(0.16f, 0.24f, 0.03f), palette.Metal, false);
-
-            GameObject glow = new GameObject("Vending machine glow");
-            glow.transform.SetParent(machine);
-            glow.transform.localPosition = new Vector3(0f, 0f, -0.65f);
-            Light light = glow.AddComponent<Light>();
-            light.type = LightType.Point;
-            light.color = palette.CoolLight;
-            light.intensity = 1.35f;
-            light.range = 5.5f;
-            light.shadows = LightShadows.None;
-        }
-
-        private static void CreateLanternRow(Vector3 origin, int side, int count, Transform parent, Palette palette)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                Vector3 position = origin + new Vector3(-side * 0.02f, Mathf.Sin(i * 1.7f) * 0.08f, (i - (count - 1) * 0.5f) * 0.72f);
-                CreateSphere("Red paper lantern", position, new Vector3(0.28f, 0.42f, 0.28f), palette.AccentRed, parent, false);
-                CreateCube("Lantern dark band", position + Vector3.up * 0.39f, new Vector3(0.2f, 0.05f, 0.2f), palette.Metal, parent, false);
-                CreateCylinder("Lantern cord", position + Vector3.up * 0.62f, new Vector3(0.012f, 0.22f, 0.012f), palette.Metal, parent, false);
-            }
-
-            GameObject glow = new GameObject("Lantern row glow");
-            glow.transform.SetParent(parent);
-            glow.transform.position = origin;
-            Light light = glow.AddComponent<Light>();
-            light.type = LightType.Point;
-            light.color = palette.WarmLight;
-            light.intensity = 1.35f;
-            light.range = 6.2f;
-        }
-
-        private static void CreateNoren(int side, float facadeX, float z, Transform parent, Palette palette)
-        {
-            for (int panel = -1; panel <= 1; panel++)
-            {
-                CreateCube("Indigo noren panel", new Vector3(facadeX - side * 0.34f, 2.05f, z + panel * 0.43f), new Vector3(0.09f, 0.95f, 0.38f), palette.AccentBlue, parent, false);
-            }
-
-            CreateCube("Noren rail", new Vector3(facadeX - side * 0.31f, 2.55f, z), new Vector3(0.12f, 0.08f, 1.42f), palette.Metal, parent, false);
-        }
-
-        private static void CreateCrates(Vector3 origin, int side, Transform parent, Palette palette)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                Vector3 position = origin + new Vector3(-side * (i % 2) * 0.38f, i == 2 ? 0.38f : 0f, (i - 1) * 0.52f);
-                CreateCube("Wooden delivery crate", position, new Vector3(0.58f, 0.62f, 0.58f), palette.BuildingWarm, parent, false);
-                CreateCube("Crate band", position + Vector3.up * 0.14f, new Vector3(0.62f, 0.08f, 0.62f), palette.Metal, parent, false);
-            }
-        }
-
-        private static void CreateNeonGate(Vector3 origin, Transform parent, Palette palette)
-        {
-            CreateCube("Neon gate left", origin + new Vector3(-3.55f, -1.7f, 0f), new Vector3(0.18f, 3.4f, 0.22f), palette.AccentBlue, parent, false);
-            CreateCube("Neon gate right", origin + new Vector3(3.55f, -1.7f, 0f), new Vector3(0.18f, 3.4f, 0.22f), palette.AccentRed, parent, false);
-            CreateCube("Neon gate header", origin, new Vector3(7.25f, 0.32f, 0.28f), palette.AccentBlue, parent, false);
-            CreateCube("Neon gate sign", origin + new Vector3(0f, -0.45f, 0f), new Vector3(2.5f, 0.72f, 0.18f), palette.AccentRed, parent, false);
-
-            GameObject glow = new GameObject("Neon gate glow");
-            glow.transform.SetParent(parent);
-            glow.transform.position = origin + Vector3.down * 0.6f;
-            Light light = glow.AddComponent<Light>();
-            light.type = LightType.Point;
-            light.color = palette.CoolLight;
-            light.intensity = 1.6f;
-            light.range = 8f;
         }
 
         private static void CreatePlant(Vector3 origin, Transform parent, Palette palette)
@@ -800,20 +600,12 @@ namespace Konseki
             light.range = 4.2f;
         }
 
-        private static void CreateRain(Transform parent, Palette palette)
-        {
-            GameObject rainObject = new GameObject("Pixel rain");
-            rainObject.transform.SetParent(parent);
-            rainObject.transform.position = new Vector3(0f, 8f, 42f);
-            rainObject.AddComponent<PixelRain>().Configure(palette.AccentBlue, 80);
-        }
-
         private static void CreateDestination(Transform parent, Palette palette, AlleyVariant variant)
         {
             Vector3 doorway = new Vector3(0.2f, 1.5f, 85f);
             CreateCube("Destination wall", new Vector3(0f, 2.8f, 86.5f), new Vector3(10f, 5.6f, 1f), palette.BuildingDark, parent, true);
             CreateCube("Destination doorway", doorway, new Vector3(2.25f, 3f, 0.15f), palette.AccentCream, parent, false);
-            CreateSignText(variant == AlleyVariant.QuietResidential ? "門" : "終", doorway + new Vector3(0f, 1.65f, -0.11f), 0, palette.UiAccent, parent, 0.085f);
+            CreateSignText("門", doorway + new Vector3(0f, 1.65f, -0.11f), 0, palette.UiAccent, parent, 0.085f);
 
             GameObject lightObject = new GameObject("Destination light");
             lightObject.transform.SetParent(parent);
@@ -833,7 +625,7 @@ namespace Konseki
             Light light = lightObject.AddComponent<Light>();
             light.type = LightType.Directional;
             light.color = palette.KeyLight;
-            light.intensity = variant == AlleyVariant.NeonYokocho ? 0.38f : 0.56f;
+            light.intensity = 0.56f;
             light.shadows = LightShadows.Soft;
             light.shadowStrength = 0.62f;
         }
@@ -867,7 +659,7 @@ namespace Konseki
             cameraObject.AddComponent<AudioListener>();
 
             PixelArtRenderer pixelRenderer = cameraObject.AddComponent<PixelArtRenderer>();
-            pixelRenderer.Configure(variant == AlleyVariant.NeonYokocho ? 432 : 480, 48, variant == AlleyVariant.NeonYokocho ? 0.05f : 0.02f);
+            pixelRenderer.Configure(480, 48, 0.02f);
 
             GameObject fillObject = new GameObject("First person eye-adaptation fill");
             fillObject.transform.SetParent(cameraObject.transform, false);
@@ -875,7 +667,7 @@ namespace Konseki
             Light fill = fillObject.AddComponent<Light>();
             fill.type = LightType.Point;
             fill.color = palette.KeyLight;
-            fill.intensity = variant == AlleyVariant.NeonYokocho ? 0.42f : 0.62f;
+            fill.intensity = 0.62f;
             fill.range = 15f;
             fill.shadows = LightShadows.None;
 
@@ -925,7 +717,7 @@ namespace Konseki
             for (int i = 0; i < renderers.Length; i++)
             {
                 MeshRenderer renderer = renderers[i];
-                if (renderer.GetComponent<MeshFilter>() == null || renderer.GetComponentInParent<PixelRain>() != null)
+                if (renderer.GetComponent<MeshFilter>() == null)
                 {
                     continue;
                 }

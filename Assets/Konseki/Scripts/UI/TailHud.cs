@@ -77,10 +77,9 @@ namespace Konseki
 
         private void DrawControls()
         {
-            Rect panel = new Rect(24f, Screen.height - 64f, Mathf.Min(760f, Screen.width - 48f), 42f);
+            Rect panel = new Rect(24f, Screen.height - 50f, Mathf.Min(620f, Screen.width - 48f), 28f);
             DrawRect(panel, PanelColor());
-            GUI.Label(new Rect(panel.x + 14f, panel.y + 2f, panel.width - 28f, 20f), "WASD 이동  ·  마우스 시점  ·  ESC 커서  ·  R 재시작", bodyStyle);
-            GUI.Label(new Rect(panel.x + 14f, panel.y + 20f, panel.width - 28f, 20f), "골목 전환:  1 쇼와 이자카야  ·  2 네온 요코초  ·  3 고요한 주택가", bodyStyle);
+            GUI.Label(new Rect(panel.x + 14f, panel.y + 4f, panel.width - 28f, 20f), "WASD 이동  ·  마우스 시점  ·  ESC 커서  ·  R 재시작", bodyStyle);
         }
 
         private void DrawVariantTitle()
@@ -158,28 +157,12 @@ namespace Konseki
 
         private static Color PanelColor()
         {
-            switch (AlleyVariantInfo.Current)
-            {
-                case AlleyVariant.NeonYokocho:
-                    return new Color(0.025f, 0.02f, 0.09f, 0.88f);
-                case AlleyVariant.QuietResidential:
-                    return new Color(0.045f, 0.075f, 0.085f, 0.88f);
-                default:
-                    return new Color(0.075f, 0.035f, 0.025f, 0.88f);
-            }
+            return new Color(0.045f, 0.075f, 0.085f, 0.88f);
         }
 
         private static Color AccentColor()
         {
-            switch (AlleyVariantInfo.Current)
-            {
-                case AlleyVariant.NeonYokocho:
-                    return new Color(0.1f, 0.83f, 0.94f, 1f);
-                case AlleyVariant.QuietResidential:
-                    return new Color(0.9f, 0.78f, 0.55f, 1f);
-                default:
-                    return new Color(0.95f, 0.58f, 0.3f, 1f);
-            }
+            return new Color(0.9f, 0.78f, 0.55f, 1f);
         }
     }
 }

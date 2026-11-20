@@ -10,15 +10,13 @@ namespace Konseki.EditorTools
     [InitializeOnLoad]
     public static class NightAlleyPrefabBaker
     {
-        public const int BakeVersion = 1;
+        public const int BakeVersion = 2;
 
         private const string LevelsFolder = "Assets/Konseki/Resources/Levels";
         private const string GeneratedAssetsFolder = "Assets/Konseki/Generated/BakedAssets";
 
         private static readonly AlleyVariant[] Variants =
         {
-            AlleyVariant.ShowaIzakaya,
-            AlleyVariant.NeonYokocho,
             AlleyVariant.QuietResidential
         };
 
@@ -28,13 +26,10 @@ namespace Konseki.EditorTools
             "Assets/Konseki/Scripts/World/BakedAlleyLevel.cs",
             "Assets/Konseki/Scripts/World/AlleyRouteCatalog.cs",
             "Assets/Konseki/Scripts/World/PixelArtRenderer.cs",
-            "Assets/Konseki/Scripts/World/PixelRain.cs",
             "Assets/Konseki/Scripts/World/FlickeringLight.cs",
             "Assets/Konseki/Scripts/NPC/TargetWalker.cs",
             "Assets/Konseki/Scripts/Player/FirstPersonController.cs",
             "Assets/Konseki/Resources/Shaders/PixelArt.shader",
-            "Assets/Konseki/Resources/PixelArt/showa-izakaya-wall.png",
-            "Assets/Konseki/Resources/PixelArt/neon-yokocho-wall.png",
             "Assets/Konseki/Resources/PixelArt/quiet-residential-wall.png"
         };
 
@@ -47,13 +42,13 @@ namespace Konseki.EditorTools
             QueueAutoBake();
         }
 
-        [MenuItem("Konseki/Level/Bake All Alley Prefabs")]
+        [MenuItem("Konseki/Level/Bake Quiet Residential Prefab")]
         public static void BakeAllFromMenu()
         {
             BakeAll(true);
         }
 
-        [MenuItem("Konseki/Level/Bake All Alley Prefabs", true)]
+        [MenuItem("Konseki/Level/Bake Quiet Residential Prefab", true)]
         private static bool ValidateBakeAllFromMenu()
         {
             return !isBaking && !EditorApplication.isCompiling && !EditorApplication.isPlayingOrWillChangePlaymode;
@@ -138,8 +133,8 @@ namespace Konseki.EditorTools
                 ValidateBakedPrefabs(signature);
                 AssetDatabase.Refresh();
                 Debug.Log(userInitiated
-                    ? "[Konseki] 골목 Prefab 3종을 다시 생성했습니다."
-                    : "[Konseki] 소스 변경을 감지해 골목 Prefab 3종을 자동 생성했습니다.");
+                    ? "[Konseki] 고요한 주택가 Prefab을 다시 생성했습니다."
+                    : "[Konseki] 소스 변경을 감지해 고요한 주택가 Prefab을 자동 생성했습니다.");
             }
             finally
             {
@@ -362,7 +357,7 @@ namespace Konseki.EditorTools
                 }
             }
 
-            Debug.Log($"[Konseki] Prefab 검증 완료: 3개 테마, Renderer {rendererCount}개.");
+            Debug.Log($"[Konseki] Prefab 검증 완료: 고요한 주택가, Renderer {rendererCount}개.");
         }
 
         private static string PrefabPath(AlleyVariant variant)

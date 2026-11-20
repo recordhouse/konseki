@@ -1,6 +1,6 @@
 # Konseki
 
-일본의 밤 골목을 배경으로 한 1인칭 미행 게임 프로토타입입니다. 외부 에셋 없이 유니티 기본 도형과 런타임 생성 코드만으로 플레이 가능한 기본 틀을 구성했습니다.
+고요한 일본 주택가의 밤을 배경으로 한 1인칭 미행 게임 프로토타입입니다. 외부 에셋 없이 유니티 기본 도형과 런타임 생성 코드만으로 플레이 가능한 기본 틀을 구성했습니다.
 
 ## 실행
 
@@ -17,9 +17,6 @@
 - `Esc` — 마우스 잠금 해제
 - `화면 클릭` — 마우스 다시 잠금
 - `R` — 현재 게임 재시작
-- `1` — 쇼와 시대 이자카야 골목
-- `2` — 비 내리는 네온 요코초
-- `3` — 고요한 일본 주택가
 
 ## 게임 규칙
 
@@ -37,8 +34,7 @@
 - `AlleyRouteCatalog` — 타깃 이동 경로만 분리해 관리
 - `NightAlleyPrefabBaker` — 골목과 재질을 편집기에서 Prefab으로 변환
 - `PixelArtRenderer` — 저해상도 픽셀화, 제한 팔레트와 디더링
-- `AlleyVariantSwitcher` — 세 가지 골목 테마 전환
-- `FirstPersonController` — 느린 1인칭 이동/시점
+- `FirstPersonController` — 느린 1인칭 이동과 빠른 마우스 시점 전환
 - `TargetWalker` — 타깃의 경로 이동과 보행 모션
 - `TailGameManager` — 거리, 의심도, 성공/실패 판정
 - `TailHud` — 상태 HUD와 안내 문구
@@ -47,10 +43,10 @@
 
 ## 제작 구조
 
-- 편집 모드에서 골목 소스가 바뀌면 `Assets/Konseki/Resources/Levels`에 테마별 Prefab 3종을 자동 생성합니다.
+- 편집 모드에서 골목 소스가 바뀌면 `Assets/Konseki/Resources/Levels`에 고요한 주택가 Prefab을 자동 생성합니다.
 - 게임 실행 시에는 Prefab을 불러오므로 건물·도로·재질을 매번 코드로 다시 만들지 않습니다.
 - Prefab이 아직 없거나 손상된 경우에만 기존 절차 생성 방식을 안전한 폴백으로 사용합니다.
-- 수동 재생성이 필요하면 Unity 메뉴에서 `Konseki > Level > Bake All Alley Prefabs`를 실행합니다.
+- 수동 재생성이 필요하면 Unity 메뉴에서 `Konseki > Level > Bake Quiet Residential Prefab`을 실행합니다.
 - 타깃 경로는 `Assets/Konseki/Scripts/World/AlleyRouteCatalog.cs`에서 수정합니다.
 
 ## 성능 기준

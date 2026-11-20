@@ -10,7 +10,7 @@ namespace Konseki
         [SerializeField, Min(0.1f)] private float acceleration = 9f;
 
         [Header("View")]
-        [SerializeField, Min(0.01f)] private float mouseSensitivity = 1.35f;
+        [SerializeField, Min(0.01f)] private float mouseSensitivity = 2.8f;
         [SerializeField] private float minPitch = -75f;
         [SerializeField] private float maxPitch = 78f;
 

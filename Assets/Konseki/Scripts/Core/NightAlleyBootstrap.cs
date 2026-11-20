@@ -44,8 +44,6 @@ namespace Konseki
 
                 TailHud hud = gameObject.AddComponent<TailHud>();
                 hud.Configure(manager);
-
-                gameObject.AddComponent<AlleyVariantSwitcher>();
             }
             finally
             {
