@@ -1,69 +1,35 @@
-# Konseki
+# Konseki — Three.js
 
-고요한 일본 주택가의 밤을 배경으로 한 1인칭 미행 게임 프로토타입입니다. VRM 1.0 기반의 Cartoon Rendering 3D 캐릭터를 포함하며, 골목 환경은 유니티 기본 도형과 런타임 생성 코드로 구성했습니다.
+조용한 일본 주택가의 밤을 배경으로 한 1인칭 미행 게임입니다. Unity를 사용하지 않고 Three.js와 Vite로 실행합니다.
 
 ## 실행
 
-1. Unity Hub에서 이 폴더를 프로젝트로 추가합니다.
-2. Unity 2022.3 LTS 이상으로 프로젝트를 엽니다.
-3. `Assets/Scenes/NightAlley.unity`를 열고 Play를 누릅니다.
+macOS에서는 `게임실행.command`를 더블클릭하면 서버와 브라우저가 함께 실행됩니다.
 
-씬이 시작되면 현대식 메인 도로, 동·서쪽 순환 샛길, 조명, 플레이어, 타깃, HUD가 자동으로 생성됩니다.
+터미널에서 직접 실행하려면:
+
+```bash
+npm install
+npm run dev
+```
+
+터미널에 표시되는 로컬 주소를 브라우저에서 연 뒤 `추적 시작`을 누릅니다.
 
 ## 조작
 
-- `W A S D` — 천천히 걷기
-- `마우스` — 시점 이동
-- `Esc` — 마우스 잠금 해제
-- `화면 클릭` — 마우스 다시 잠금
-- `R` — 현재 게임 재시작
+- `W A S D`: 천천히 걷기
+- `마우스`: 시점 이동
+- `Esc`: 일시 정지 및 마우스 해제
+- `R`: 다시 시작
 
-## 게임 규칙
+## VRM 캐릭터 넣기
 
-- 게임 안에서는 `Konseki.vrm`의 여성 카툰 3D 타깃이 여러 교차로와 순환 샛길을 따라 이동합니다.
-- 너무 가까이 접근하거나 타깃의 시야에 오래 머물면 의심 수치가 올라갑니다.
-- 너무 멀리 떨어진 상태가 지속되면 타깃을 놓칩니다.
-- 타깃이 목적지에 도착할 때 적절한 거리를 유지하고 있으면 성공합니다.
+`public/models/Konseki.vrm` 경로에 VRM 파일을 넣으면 기본 3D 타겟 대신 자동으로 로드합니다. 파일이 없거나 로드에 실패하면 가벼운 절차형 캐릭터를 사용합니다.
 
-## 코드 구성
+## 성능 설정
 
-- `NightAlleyBootstrap` — 실행 시 프로토타입 전체 조립
-- `BakedAlleyLevel` — 미리 구운 골목 Prefab을 로드하고 조명/환경 설정 복원
-- `PerformanceGovernor` — 60 FPS 상한, 비활성 창 15 FPS, High 품질 적용
-- `NightAlleyWorldBuilder` — 일본 야간 골목과 조명 생성
-- `AlleyRouteCatalog` — 타깃 이동 경로만 분리해 관리
-- `NightAlleyPrefabBaker` — 골목과 재질을 편집기에서 Prefab으로 변환
-- `PixelArtRenderer` — 저해상도 픽셀화, 제한 팔레트와 디더링
-- `FirstPersonController` — 느린 1인칭 이동과 빠른 마우스 시점 전환
-- `TargetWalker` — 타깃의 경로 이동
-- `CartoonTargetAnimator` — VRM Humanoid 뼈대 기반 3D 보행과 몸통 바운스
-- `VrmTargetCharacterBuilder` — `Konseki.vrm` 임포트, MToon 재질과 게임용 프리팹 연결
-- `TailGameManager` — 거리, 의심도, 성공/실패 판정
-- `TailHud` — 상태 HUD와 안내 문구
-
-`NightAlleyWorldBuilder.cs`는 골목 구조를, `AlleyRouteCatalog.cs`는 타깃 동선을 담당합니다.
-
-## 제작 구조
-
-- 편집 모드에서 골목 소스가 바뀌면 `Assets/Konseki/Resources/Levels`에 고요한 주택가 Prefab을 자동 생성합니다.
-- 게임 실행 시에는 Prefab을 불러오므로 건물·도로·재질을 매번 코드로 다시 만들지 않습니다.
-- Prefab이 아직 없거나 손상된 경우에만 기존 절차 생성 방식을 안전한 폴백으로 사용합니다.
-- 수동 재생성이 필요하면 Unity 메뉴에서 `Konseki > Level > Bake Quiet Residential Prefab`을 실행합니다.
-- 타깃 경로는 `Assets/Konseki/Scripts/World/AlleyRouteCatalog.cs`에서 수정합니다.
-- 3D 타깃을 다시 생성해야 하면 Unity 메뉴에서 `Konseki > Characters > Build Target From Konseki VRM`을 실행합니다.
-
-## VRM 캐릭터 적용 방식
-
-- 원본은 `Assets/Konseki/ArtReferences/TargetWoman/Konseki.vrm`이며 VRM 1.0 Humanoid, MToon 재질과 Spring Bone 정보를 유지합니다.
-- 무료 UniVRM 패키지가 VRM을 임포트하고, `VrmTargetCharacterBuilder`가 보행용 뼈대와 타깃 이동 루트를 연결합니다.
-- Unity AI 생성이나 유료 모델 변환을 사용하지 않습니다.
-- 모델을 배포할 때는 VRM 파일 안의 이용 허가와 출처 표기 조건을 확인합니다.
-
-## 성능 기준
-
-- 게임 실행은 전경 60 FPS, 비활성 창 15 FPS를 넘지 않습니다.
-- 기본 품질은 High이며 Ultra를 프로젝트 기본값으로 사용하지 않습니다.
-- 실시간 그림자는 달빛 방향광 하나에만 사용하고 포인트라이트에는 사용하지 않습니다.
-- 움직이지 않는 골목 메시들은 런타임 정적 배칭 대상으로 유지합니다.
-- 반복 효과는 개수를 제한하고 30 Hz 업데이트를 기본으로 합니다.
-- HDR, 추가 후처리, 실시간 그림자 조명은 실제 시각 효과가 필요한 경우에만 추가합니다.
+- 렌더링 45 FPS 제한
+- 백그라운드 탭 렌더링 정지
+- 기기 픽셀 비율 최대 1.25
+- 그림자 비활성화
+- `powerPreference: low-power`
