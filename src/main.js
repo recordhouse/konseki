@@ -35,8 +35,10 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(66, 1, 0.05, 125);
 const { colliders } = buildWorld(scene);
 const player = new FirstPersonPlayer(camera, canvas, colliders);
-const target = new TargetActor(scene, targetRoute, (message) => {
+startButton.disabled = true;
+const target = new TargetActor(scene, targetRoute, (message, ready) => {
   assetStatus.textContent = message;
+  startButton.disabled = !ready;
 });
 
 const game = { phase: 'ready', suspicion: 0, lostTime: 0, safeTime: 0 };
@@ -51,6 +53,7 @@ function resize() {
 }
 
 function beginGame() {
+  if (!target.ready) return;
   if (game.phase === 'won' || game.phase === 'lost') resetGame();
   game.phase = 'playing';
   player.setEnabled(true);

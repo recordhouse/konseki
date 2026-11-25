@@ -22,9 +22,13 @@ npm run dev
 - `Esc`: 일시 정지 및 마우스 해제
 - `R`: 다시 시작
 
-## VRM 캐릭터 넣기
+## 타겟 캐릭터
 
-`public/models/Konseki.vrm` 경로에 VRM 파일을 넣으면 기본 3D 타겟 대신 자동으로 로드합니다. 파일이 없거나 로드에 실패하면 가벼운 절차형 캐릭터를 사용합니다.
+게임은 `public/models/woman-v4-walk.glb`의 V4 캐릭터와 `Walk`/`Idle` 애니메이션을 사용합니다. 원본 모델과 참고 이미지는 `artifacts/new-woman-v4/`에 있습니다. 아래 명령으로 게임용 모델을 다시 만들 수 있습니다.
+
+```bash
+blender -b -t 4 --factory-startup --python-exit-code 1 -P tools/rig_woman_v4.py
+```
 
 ## 성능 설정
 
